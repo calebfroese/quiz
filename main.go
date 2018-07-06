@@ -8,6 +8,8 @@ import (
 	"log"
 	"strconv"
 	"strings"
+
+	"github.com/fatih/color"
 )
 
 func main() {
@@ -29,10 +31,9 @@ func main() {
 		fmt.Scan(&response)
 		answer, _ := strconv.Atoi(record[1])
 		if answer != response {
-			fmt.Println("Incorrect")
+			color.Red("Incorrect")
 		} else {
-			fmt.Println("Correct")
+			color.Green("Correct")
 		}
-		fmt.Println()
 	}
 }
