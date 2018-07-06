@@ -17,6 +17,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	correct := 0
+	total := 0
 	csvr := csv.NewReader(strings.NewReader(string(data)))
 	for {
 		record, err := csvr.Read()
@@ -31,10 +33,16 @@ func main() {
 		var response int
 		fmt.Scan(&response)
 		answer, _ := strconv.Atoi(record[1])
+		total++
 		if answer != response {
 			color.Red("Incorrect")
 		} else {
 			color.Green("Correct")
+			correct++
 		}
 	}
+	fmt.Println("")
+	color.Yellow("Final Score")
+	finalScore := strconv.Itoa(correct) + "/" + strconv.Itoa(total)
+	color.Yellow(finalScore)
 }
