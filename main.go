@@ -33,5 +33,6 @@ func main() {
 		} else {
 			fmt.Println("Correct")
 		}
+		fmt.Println()
 	}
 }
