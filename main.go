@@ -26,7 +26,8 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println("Question", record[0])
+		q := record[0] + "?"
+		color.Yellow(q)
 		var response int
 		fmt.Scan(&response)
 		answer, _ := strconv.Atoi(record[1])
