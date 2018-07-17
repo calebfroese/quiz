@@ -33,6 +33,7 @@ var qPath = flag.String("questions", "./problems.csv", "path to the csv question
 func main() {
 	flag.Parse()
 
+	onboard()
 	qs := parseCSV(*qPath)
 	go timer(*countdown)
 	for _, c := range qs {
@@ -74,6 +75,13 @@ func parseCSV(path string) (challenges []challenge) {
 	return
 }
 
+func onboard() {
+	color.Green("Welcome to the gophercises quiz test.")
+	color.White("You will be tested with a series of numeric questions.")
+	color.White("Press enter when you are ready to begin")
+	fmt.Scanln()
+}
+
 func timer(seconds int) {
 	defer os.Exit(0)
 	time.Sleep(time.Duration(seconds) * time.Second)
@@ -82,7 +90,7 @@ func timer(seconds int) {
 }
 
 func gameEnd() {
-	fmt.Println("")
+	color.White("")
 	color.Yellow("Final Score")
 	finalScore := strconv.Itoa(s.correct) + "/" + strconv.Itoa(s.total)
 	color.Yellow(finalScore)
