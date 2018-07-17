@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/csv"
+	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -26,10 +27,14 @@ type score struct {
 }
 
 var s = score{0, 0, 0}
+var countdown = flag.Int("countdown", 30, "amount of seconds until game over")
+var qPath = flag.String("questions", "./problems.csv", "path to the csv questions")
 
 func main() {
-	qs := parseCSV("./problems.csv")
-	go timer(30)
+	flag.Parse()
+
+	qs := parseCSV(*qPath)
+	go timer(*countdown)
 	for _, c := range qs {
 		color.Yellow(c.question + "?")
 		var response string
