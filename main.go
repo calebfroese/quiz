@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"os"
 	"strconv"
 	"strings"
@@ -28,13 +29,14 @@ type score struct {
 
 var s = score{0, 0, 0}
 var countdown = flag.Int("countdown", 30, "amount of seconds until game over")
+var shuffle = flag.Bool("shuffle", false, "shuffle the questions")
 var qPath = flag.String("questions", "./problems.csv", "path to the csv questions")
 
 func main() {
 	flag.Parse()
 
 	onboard()
-	qs := parseCSV(*qPath)
+	qs := parseCSV(*qPath, *shuffle)
 	go timer(*countdown)
 	for _, c := range qs {
 		color.Yellow(c.question + "?")
@@ -50,7 +52,7 @@ func main() {
 	gameEnd()
 }
 
-func parseCSV(path string) (challenges []challenge) {
+func parseCSV(path string, shuffle bool) (challenges []challenge) {
 	challenges = make([]challenge, 0)
 
 	data, err := ioutil.ReadFile(path)
@@ -72,6 +74,12 @@ func parseCSV(path string) (challenges []challenge) {
 		challenges = append(challenges, c)
 	}
 	s.total = len(challenges)
+	if shuffle {
+		rand.Shuffle(len(challenges), func(i, j int) {
+			fmt.Println(j, j, challenges[i], challenges[j])
+			challenges[i], challenges[j] = challenges[j], challenges[i]
+		})
+	}
 	return
 }
 
