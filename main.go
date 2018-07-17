@@ -8,6 +8,7 @@ import (
 	"log"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/fatih/color"
 )
@@ -21,6 +22,8 @@ func main() {
 	qs := parseCSV("./problems.csv")
 	correct := 0
 	total := 0
+
+	go timer(30)
 
 	for _, c := range qs {
 		color.Yellow(c.question + "?")
@@ -63,4 +66,9 @@ func parseCSV(path string) (challenges []challenge) {
 		challenges = append(challenges, c)
 	}
 	return
+}
+
+func timer(seconds int) {
+	time.Sleep(time.Duration(seconds) * time.Second)
+	fmt.Print("Out of time!")
 }
