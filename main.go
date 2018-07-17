@@ -12,37 +12,55 @@ import (
 	"github.com/fatih/color"
 )
 
+type challenge struct {
+	question string
+	answer   string
+}
+
 func main() {
-	data, err := ioutil.ReadFile("./problems.csv")
-	if err != nil {
-		log.Fatal(err)
-	}
+	qs := parseCSV("./problems.csv")
 	correct := 0
 	total := 0
-	csvr := csv.NewReader(strings.NewReader(string(data)))
-	for {
-		record, err := csvr.Read()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			log.Fatal(err)
-		}
-		q := record[0] + "?"
-		color.Yellow(q)
-		var response int
+
+	for _, c := range qs {
+		color.Yellow(c.question + "?")
+		var response string
 		fmt.Scan(&response)
-		answer, _ := strconv.Atoi(record[1])
 		total++
-		if answer != response {
+		if c.answer != response {
 			color.Red("Incorrect")
 		} else {
 			color.Green("Correct")
 			correct++
 		}
 	}
+
 	fmt.Println("")
 	color.Yellow("Final Score")
 	finalScore := strconv.Itoa(correct) + "/" + strconv.Itoa(total)
 	color.Yellow(finalScore)
+}
+
+func parseCSV(path string) (challenges []challenge) {
+	challenges = make([]challenge, 0)
+
+	data, err := ioutil.ReadFile(path)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	csvr := csv.NewReader(strings.NewReader(string(data)))
+	for {
+		record, err := csvr.Read()
+		if err == io.EOF {
+			// end of input
+			break
+		}
+		if err != nil {
+			log.Fatal(err)
+		}
+		c := challenge{record[0], record[1]}
+		challenges = append(challenges, c)
+	}
+	return
 }
