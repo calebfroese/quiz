@@ -6,6 +6,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -18,30 +19,29 @@ type challenge struct {
 	answer   string
 }
 
+type score struct {
+	total     int
+	correct   int
+	incorrect int
+}
+
+var s = score{0, 0, 0}
+
 func main() {
 	qs := parseCSV("./problems.csv")
-	correct := 0
-	total := 0
-
 	go timer(30)
-
 	for _, c := range qs {
 		color.Yellow(c.question + "?")
 		var response string
 		fmt.Scan(&response)
-		total++
 		if c.answer != response {
 			color.Red("Incorrect")
 		} else {
 			color.Green("Correct")
-			correct++
+			s.correct++
 		}
 	}
-
-	fmt.Println("")
-	color.Yellow("Final Score")
-	finalScore := strconv.Itoa(correct) + "/" + strconv.Itoa(total)
-	color.Yellow(finalScore)
+	gameEnd()
 }
 
 func parseCSV(path string) (challenges []challenge) {
@@ -65,10 +65,20 @@ func parseCSV(path string) (challenges []challenge) {
 		c := challenge{record[0], record[1]}
 		challenges = append(challenges, c)
 	}
+	s.total = len(challenges)
 	return
 }
 
 func timer(seconds int) {
+	defer os.Exit(0)
 	time.Sleep(time.Duration(seconds) * time.Second)
-	fmt.Print("Out of time!")
+	color.Red("Out of time!")
+	gameEnd()
+}
+
+func gameEnd() {
+	fmt.Println("")
+	color.Yellow("Final Score")
+	finalScore := strconv.Itoa(s.correct) + "/" + strconv.Itoa(s.total)
+	color.Yellow(finalScore)
 }
